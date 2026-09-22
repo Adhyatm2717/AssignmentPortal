@@ -31,7 +31,19 @@ app.get('/assignments', async(req, res)=>{
     }
 })
 
+app.patch('/assignments/:id', async(req, res)=>{
+    try{
+        const { id } = req.params;
+        const result = await pool.query(`
+            UPDATE assignments SET submitted = true where id = $1
+            RETURNING * ;`, [id])
+        res.status(201).json(result.rows[0])
+    }catch(err){
+        console.log(err)
+        res.status(500).json({err:"Server Failed"})
+    }
 
+})
 app.listen(3000,() => {
     console.log('Server Chal Gaya Sir')
 });
